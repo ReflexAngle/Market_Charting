@@ -1,7 +1,6 @@
 from tkinter import *
 from bs4 import BeautifulSoup
 import requests
-import statistics
 import time
 
 Window = Tk(className='Market Charting')
@@ -118,16 +117,16 @@ URL2 = 'https://www.marketwatch.com/'
 
 # function for the commodity button.
 def button_click():
-    Stock_Input = input('')
 
     newLabel = Label(Window, text="Click")
     newLabel.grid(row=5, column=0)
+    get_button = Button(Window, text='Get Price', Get_Input)
 
     enter = Entry(Window)
     enter.grid(row=7, column=0)
 
-    if enter == "v":
-        print("hello")
+    return enter
+
 
 # function for the stock button.
 def other_click():
@@ -136,6 +135,8 @@ def other_click():
 
     enter = Entry(Window)
     enter.grid(row=7, column=0)
+
+    return enter
 
 
 Name_Lable = Label(Window, text="Market Charting", font="ubuntu")
@@ -149,3 +150,58 @@ Commodity_Button.grid(row=3, column=0)
 Stock_Button.grid(row=3, column=1)
 
 Window.mainloop()
+
+
+
+'''# function that will just print the result of the search (price, name, and change)
+def get_price(result, URL):
+    price = result.string
+
+    soup = BeautifulSoup(URL.text, "html.parser")
+    name = soup.find('span', class_='price-section__label')
+    change = soup.find('span', class_='price-section__relative-value')
+    point = soup.find('span', class_='price-section__absolute-value')
+    name = name.string
+    point = point.string
+    change = change.string
+
+    print(name)
+    print(price, point, change)
+
+    return price, name, point, change
+
+# search based on the name of the company the stock is based on
+# A little finicky som stocks companies like ford may be a company but is the symbol for a stock too
+# It's better for now to stay with the name of the stocks symbol
+# for instance if you type ford instead of getting Ford Motor you get Forward Industries
+html = input("")
+
+url = 'https://markets.businessinsider.com/searchresults?_search=' + html
+req = requests.get(url)
+soup = BeautifulSoup(req.text, "html.parser")
+result = soup.find('table', class_='table')
+result = result.find('td', class_='table__td')
+
+for i in result.find_all('a'):
+    result = (i.get('href'))
+    result = result.strip()
+    result = result
+
+# try both the name and the symbol
+try:
+    URL = 'https://markets.businessinsider.com' + result
+
+    URL = requests.get(URL)
+    soup = BeautifulSoup(URL.text, "html.parser")
+    result = soup.find('span', class_='price-section__current-value')
+
+    get_price(result, URL)
+
+except:
+    URL = 'https://markets.businessinsider.com/stocks/'+html+'-stock'
+
+    URL = requests.get(URL)
+    soup = BeautifulSoup(URL.text, "html.parser")
+    result = soup.find('span', class_='price-section__current-value')
+
+    get_price(result, URL)'''
